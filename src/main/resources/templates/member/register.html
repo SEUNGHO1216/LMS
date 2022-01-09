@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원가입</title>
+</head>
+<script type="text/javascript">
+	function check(){
+		if(document.form.email.value==""){
+			alert("이메일을 입력해주세요");
+			document.form.email.focus();
+		}else if(document.form.password.value==""){
+			alert("비밀번호를 입력해주세요");
+			document.form.password.focus();
+		}else if(document.form.rePassword.value!=document.form.password.value){
+			alert("비밀번호 확인이 일치하지 않습니다. 다시 확인해주세요")
+			document.form.rePassword.focuse();
+		}else if(document.form.name.value==""){
+			alert("이름을 입력해주세요");
+			document.form.name.focus();
+		}else if(document.form.phone.value==""){
+			alert("전화번호를 입력해주세요");
+			document.form.phone.focus();
+		}else{
+			document.form.submit();
+		}
+	}
+</script>
+<body>
+	<h1>회원가입</h1>
+	<div th:replace="/fragments/layout::fragment-body-menu"></div>
+	<form name="form" method="post">
+		<table border="1">
+			<tr><th colspan="2">정보 입력해줘요</th></tr>
+			<tr>
+				<td>이메일</td><td><input type="email" name="email"></td>
+			</tr>
+			<tr>
+				<td>비밀번호</td><td><input type="password" name="password"></td>
+			</tr>
+			<tr>
+				<td>비밀번호 확인</td><td><input type="password" name="rePassword"></td>
+			</tr>
+			<tr>
+				<td>이름</td><td><input type="text" name="name"></td>
+			</tr>
+			<tr>
+				<td>전화번호</td><td><input type="tel" name="phone"></td>
+			</tr>
+		</table>
+		<input type="button" value="가입하기" onclick="javascript:check()">
+		<input type="reset" value="초기화">
+	</form>
+</body>
+</html>

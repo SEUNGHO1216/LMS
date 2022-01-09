@@ -1,0 +1,12 @@
+이클립스의 경우 데이터베이스 연동할때 yml 파일에서 url 지정 세부 지정 해주는 것이 끝이 아니라
+사용하는 db jar파일을 외부 라이브러리에 추가해주어야 한다.
+
+-Mariadb 10.6
+ip:127.0.0.1
+port:43306
+user: minicampus2
+id: minicampus2_user
+pw: abcd
+
+-gmail 2차 인증 key
+vcyggxsltsqhowvo

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.LMS.admin.mapper.MemberMapper"><!-- 이 namespace가 중요, 실질적으로 매핑시켜주는 부분 -->
+  <select id="selectList" resultType="com.project.LMS.admin.dto.MemberDTO">
+    select * from member 
+  </select>
+</mapper>

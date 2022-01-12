@@ -11,7 +11,26 @@
 	.list th, .list td{
 		border:1px solid #000;
 	}
-	
+	.searchList{
+		padding: 5px 3px 5px 0;
+		text-align:right;
+		position:relative;
+	}
+	.searchList .total-count{
+		float:left;
+		position: absolute;
+		left: 0px;
+		top:0px;
+		font-weight: 700;
+		margin:10px;
+	}
+	.pager{
+		text-align:center;
+		margin:20px;
+	}
+	.pager .on{
+		color: tomato;
+	}
 </style>
 </head>
 <body>
@@ -28,17 +47,19 @@
 		<a href="/member/logout">로그아웃</a>
 		<br>
 		<hr/>
-	</div>
 	<div class="list">
-		<div>
+		<div class="searchList">
+			<p class="total-count">
+				전체 게시물:<span th:text="${totalCount}"></span>개
+			</p>
 			<form method="get">
 				<select name="searchType">
-					<option value="all">전체</option>
-					<option value="email">이메일</option>
-					<option value="name">이름</option>
-					<option value="phone">연락처</option>
+					<option th:selected="${param.searchType eq all}"  value="all">전체</option>
+					<option th:selected="${param.searchType eq eamil}" value="email">이메일</option>
+					<option th:selected="${param.searchType eq name}" value="name">이름</option>
+					<option th:selected="${param.searchType eq phone}" value="phone">연락처</option>
 				</select>
-				<input type="text" name="searchValue">
+				<input type="search" name="searchValue">
 				<button type="submit">검색</button>
 			</form>
 		</div>
@@ -56,7 +77,7 @@
 			</thead>
 			<tbody>
 				<tr th:each ="li : ${list}">
-					<td>1</td>
+					<td th:text="${li.seq}"></td>
 					<td th:text="${li.email}"></td>
 					<td th:text="${li.name}"></td>
 					<td th:text="${li.phone}"></td>
@@ -69,6 +90,8 @@
 				</tr>
 			</tbody>
 		</table>
+		<div class="pager" th:utext="${pager}"><!-- utext로해야 html형식이 명확히 잘 나온다. -->
+		</div>
 	</div>
 </body>
 </html>

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -13,9 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.project.LMS.admin.dto.MemberDTO;
 import com.project.LMS.admin.mapper.MemberMapper;
+import com.project.LMS.admin.model.MemberParam;
 import com.project.LMS.components.MailComponents;
 import com.project.LMS.member.entity.Member;
 import com.project.LMS.member.exception.MemberEmailNotAuthenticatedException;
@@ -189,10 +193,19 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberDTO> list() {
-		MemberDTO parameter=new MemberDTO();
+	public List<MemberDTO> list(MemberParam parameter) {
 		
+		long totalCount=memberMapper.selectListCount(parameter);//adminDTO에 칼럼추가
 		List<MemberDTO> list=memberMapper.selectList(parameter);
+		int i=0;
+		if(!CollectionUtils.isEmpty(list)) {
+			for(MemberDTO x:list) {
+				x.setTotalCount(totalCount);
+				x.setSeq(totalCount-parameter.getPageStart()-i); 
+				i++;
+				
+			}
+		}
 		
 
 		return list;

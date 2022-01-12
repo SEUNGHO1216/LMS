@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.project.LMS.admin.dto.MemberDTO;
+import com.project.LMS.admin.model.MemberParam;
 import com.project.LMS.member.entity.Member;
 import com.project.LMS.member.model.MemberInput;
 import com.project.LMS.member.model.ResetPasswordInput;
@@ -26,5 +27,5 @@ public interface MemberService extends UserDetailsService{//서비스는 db의 �
 	boolean checkResetPassword(String uuid);
 	
 	/*회원목록관리 (관리자에서만 사용가능)*/
-	List<MemberDTO> list();
+	List<MemberDTO> list(MemberParam parameter);
 }

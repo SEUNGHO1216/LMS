@@ -32,6 +32,8 @@
 	   </choose>
     </if>
   </select>
+  
+  
   <select id="selectList" 
   parameterType="com.project.LMS.admin.model.MemberParam"
   resultType="com.project.LMS.admin.dto.MemberDTO">
@@ -59,6 +61,6 @@
 		    </otherwise>
 	   </choose>
     </if>
-	limit #{pageStart}, #{pageEnd}
+	limit #{pageStart},#{pageEnd}
   </select>
 </mapper>

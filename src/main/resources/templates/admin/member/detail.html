@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>관리자 회원관리 상세정보</title>
+<style>
+	.detail table{
+		width:75%;
+		border: 1px solid #000;
+		border-top: 3px solid;
+		border-bottom: 3px solid;
+		border-collapse: collapse;
+	}
+	.detail table th, .detail table td {
+		width:60%;
+		border: 1px solid;
+	}
+</style>
+</head>
+<body>
+	<h1>관리자 회원관리 - 회원 상세정보</h1>
+	<div th:replace="/fragments/layout::fragment-admin-body-menu"></div>
+	<div class="detail">
+		<table>
+			<tr>
+				<th>이메일</th>
+				<td>
+					<p th:text="${member.email}"></p>
+				</td>			
+			</tr>
+			<tr>
+				<th>이름</th>
+				<td>
+					<p th:text="${member.name}"></p>
+				</td>			
+			</tr>
+			<tr>
+				<th>연락처</th>
+				<td>
+					<p th:text="${member.phone}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>가입일</th>
+				<td>
+					<p th:text="${member.logDt}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>이메일 인증여부</th>
+				<td>
+					<p th:text="${member.emailAuthYn}"></p>				
+				</td>				
+			</tr>
+			<tr>
+				<th>이메일 인증키</th>
+				<td>
+					<p th:text="${member.emailAuthKey}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>이메일 인증 일시</th>
+				<td>
+					<p th:text="${member.emailAuthDt}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>비밀번호 초기화 유효기간</th>
+				<td >
+					<p th:text="${member.resetPasswordLimitDt}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>관리자 여부</th>
+				<td >
+					<p th:text="${member.adminYn}"></p>
+				</td>				
+			</tr>
+			<tr>
+				<th>회원 상태</th>
+				<td>
+					<p>
+						현재상태
+						<span th:text="${member.userStatus}"></span>
+					</p>
+					<div >
+						변경할 상태
+						<form  method="post" action="/admin/member/status.do">
+							<input th:value="${member.email}" name="email" type="hidden" >
+							<select name="userStatus">
+								<option value="REQ">가입승인중</option>
+								<option value="USABLE">정상이용중</option>
+								<option value="STOP">정지중</option>
+							</select>
+							<button>변경</button>
+						</form>
+					</div>
+				</td>				
+			</tr>
+			<tr>
+				<th>비밀번호 초기화</th>
+				<td>
+					<p>
+						현재 비밀번호
+						<span th:text="${member.password}"></span>
+					</p>
+					<div >
+						변경할 비밀번호
+						<form  method="post" action="/admin/member/password.do">
+							<input th:value="${member.email}" name="email" type="hidden" >
+							<input type="text" name="password"  >
+							<button>비밀번호 초기화</button>
+						</form>
+					</div>
+				</td>				
+			</tr>
+		</table>
+		<div>
+			<a href="list.do"><button>목록</button></a>
+		</div>
+	</div>
+</body>
+</html>

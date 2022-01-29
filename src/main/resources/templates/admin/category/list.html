@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>관리자 카테고리관리</title>
+<style>
+	.list table{
+		width: 100%;
+		border-collapse:collapse;
+		margin-top: 20px;
+	}
+	.list th, .list td{
+		border:1px solid #000;
+
+	}
+	.searchList{
+		padding: 5px 3px 5px 0;
+		text-align:right;
+		position:relative;
+	}
+	.searchList .total-count{
+		float:left;
+		position: absolute;
+		left: 0px;
+		top:0px;
+		font-weight: 700;
+		margin:10px;
+	}
+	.pager{
+		text-align:center;
+		margin:20px;
+	}
+	.pager .on{
+		color: tomato;
+	}
+	p.nothing{
+		text-align: center;
+	}
+	.inline-div{
+		display:inline-block;
+	}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+</script>
+<script>  /* jQuery 사용 */
+	$(document).ready(function(){
+		$('form[name=deleteForm]').on('submit',function(){
+			
+			if(!confirm('정말 삭제하시겠습니까?')){
+				return false; /*  false 시 실제로 전송은 안됨!*/
+			}
+		});
+		
+		$('button.update-button').on('click',function(){
+			
+			if(!confirm('정말 카테고리를 수정하시겠습니까?')){
+				return false; /*  false 시 실제로 전송은 안됨!*/
+			}
+			
+			var $this =$(this); /*현재 버튼을 말함*/
+			var $tr =$this.closest('tr'); /*버튼에서 가장 가까운 tr부터 찾음*/
+			
+			var id=$tr.find('input[name=id]').val();
+			var categoryName=$tr.find('input[name=categoryName]').val();
+			var sortValue=$tr.find('input[name=sortValue]').val();
+			var usingYn=$tr.find('input[type=checkbox]')[0].checked;
+			
+			console.log(id, categoryName,sortValue,usingYn);
+			
+			$updateForm=$('form[name=updateForm]');
+			
+			$updateForm.find('input[name=id]').val(id);
+			$updateForm.find('input[name=categoryName]').val(categoryName);
+			$updateForm.find('input[name=sortValue]').val(sortValue);
+			$updateForm.find('input[name=usingYn]').val(usingYn);
+		
+			$updateForm.submit();
+			
+		});
+	});
+</script>
+</head>
+<body>
+	<h1>관리자 카테고리 관리</h1>
+	<div th:replace="/fragments/layout::fragment-admin-body-menu"></div>
+	
+	<div class="list">
+		<div >
+			<form method="post" action="/admin/category/add.do">
+				<input type="text" name="categoryName" placeholder="카테고리명" required>
+				<button>추가</button>
+			</form>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>카테고리명</th>
+					<th>순서</th>
+					<th>사용여부</th>
+					<th>비고</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each ="li : ${category}">
+					<td th:text="${li.id}">
+						<input th:value="${li.id}" type="hidden" name="id">
+					</td>
+					<td>
+						<input th:value="${li.categoryName}" type="text"  name="categoryName">
+					</td>
+					<td>
+						<input th:value="${li.sortValue}" type="text" name="sortValue">
+					</td>
+					<td >
+						<input th:checked="${li.usingYn}" type="checkbox" name="usingYn" th:id="'usingYn_'+${li.id}" value="true">
+						<label th:for="'usingYn_'+${li.id}">사용</label>
+					</td>
+					<td>
+						<div class="inline-div">
+							<button class="update-button" type="button">수정</button>
+						</div>
+						<div class="inline-div">
+							<form method="post" name="deleteForm" action="/admin/category/delete.do">
+								<input type="hidden" name="id" th:value="${li.id}">
+								<button>삭제</button>
+							</form>
+						</div>
+					</td>
+				</tr>
+				
+				<tr th:if="${#lists.isEmpty(category)}">
+					<td colspan="5">
+						<p class="nothing">내용이 없습니다!</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</div>
+	<div>
+		<form name="updateForm" method="post" action="/admin/category/update.do">
+			<input type="hidden" name="id">
+			<input type="hidden" name="categoryName">
+			<input type="hidden" name="sortValue">
+			<input type="hidden" name="usingYn">
+		</form>
+	</div>
+</body>
+</html>

@@ -1,8 +1,12 @@
 package com.project.LMS.admin.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Data
 public class MemberParam {
@@ -15,6 +19,8 @@ public class MemberParam {
 	private long pageIndex;
 	private long pageSize;
 	
+	private String email;
+	
 	/*
     limit 0, 10   |pageIndex :1
     limit 10, 10  |pageIndex :2
@@ -23,7 +29,6 @@ public class MemberParam {
 	*/
 	public long getPageStart() {
 		init();
-		
 		
 		return (pageIndex-1)*pageSize;
 	}

@@ -22,7 +22,9 @@ import com.project.LMS.admin.mapper.MemberMapper;
 import com.project.LMS.admin.model.MemberParam;
 import com.project.LMS.components.MailComponents;
 import com.project.LMS.member.entity.Member;
+import com.project.LMS.member.entity.MemberCode;
 import com.project.LMS.member.exception.MemberEmailNotAuthenticatedException;
+import com.project.LMS.member.exception.MemberStopUserException;
 import com.project.LMS.member.model.MemberInput;
 import com.project.LMS.member.model.ResetPasswordInput;
 import com.project.LMS.member.repository.MemberRepository;
@@ -59,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
 				.emailAuthKey(uuid)
 				.emailAuthYn(false)
 				.emailAuthDt(LocalDateTime.now())
+				.userStatus(Member.MEMBER_STATUS_REQ)
 				.build();
 		memberRepository.save(member);//서버로 넘어간 데이터를 데이터베이스로 가져가는 과정!(
 		
@@ -83,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
 		if(member.isEmailAuthYn()) {
 			return false; //한번 인증처리된 이메일 다시 사용못하도록 조치
 		}
-		
+		member.setUserStatus(Member.MEMBER_STATUS_USABLE);
 		member.setEmailAuthYn(true);
 		member.setEmailAuthDt(LocalDateTime.now());
 		memberRepository.save(member);
@@ -101,10 +104,14 @@ public class MemberServiceImpl implements MemberService {
 		}
 		Member member=optionalMember.get();
 		
-		if(member.isEmailAuthYn()==false) {
+		if(Member.MEMBER_STATUS_REQ.equals(member.getUserStatus())){
+//		if(member.isEmailAuthYn()==false) {//이렇게해도 되긴된다
 			throw new MemberEmailNotAuthenticatedException("이메일을 활성화 이후 로그인 해주세요.");
 		}
 		
+		if(Member.MEMBER_STATUS_STOP.equals(member.getUserStatus())){
+			throw new MemberStopUserException("현재 정지된 회원입니다.");
+		}
 		List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();//권한은 개발자가 주면된다.
 		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));//롤 추가
 		
@@ -209,6 +216,54 @@ public class MemberServiceImpl implements MemberService {
 		
 
 		return list;
+	}
+
+	@Override
+	public MemberDTO detail(String email) {
+
+		Optional<Member> optionalMember=memberRepository.findById(email);
+		if(!optionalMember.isPresent()) {
+			System.out.println("일치하는 내용없음");
+			return null;
+		}
+		Member member=optionalMember.get();
+		System.out.println("★★★★★★★★");
+		System.out.println(member.getEmail());
+		System.out.println("★★★★★★★★");
+		System.out.println(member.getName());
+		
+		
+		return MemberDTO.of(member); 
+	}
+
+	@Override
+	public boolean updateStatus(String email, String userStatus) {
+
+		Optional<Member> optionalMember=memberRepository.findById(email);
+		if(!optionalMember.isPresent()) {
+			System.out.println("회원 정보 없음!");
+			throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+		}
+		Member member=optionalMember.get();
+		member.setUserStatus(userStatus);
+		memberRepository.save(member);
+		return true;
+	}
+
+	@Override
+	public boolean changePassword(String email,String password) {
+		Optional<Member> optionalMember=memberRepository.findById(email);
+		if(!optionalMember.isPresent()) {
+			System.out.println("회원 정보 없음!");
+			throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+		}
+		Member member=optionalMember.get();
+		
+		String encPassword=BCrypt.hashpw(password,BCrypt.gensalt());
+		
+		member.setPassword(encPassword);
+		memberRepository.save(member);
+		return true;
 	}
 	
 }

@@ -28,4 +28,13 @@ public interface MemberService extends UserDetailsService{//서비스는 db의 �
 	
 	/*회원목록관리 (관리자에서만 사용가능)*/
 	List<MemberDTO> list(MemberParam parameter);
+	
+	/*회원 상세 정보 구현*/
+	MemberDTO detail(String email);
+
+	/* 회원상태변경*/
+	boolean updateStatus(String email, String userStatus);
+
+	/*회원 비밀번호초기화*/
+	boolean changePassword(String email, String password);
 }
